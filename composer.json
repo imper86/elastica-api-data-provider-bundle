@@ -1,0 +1,25 @@
+{
+    "name": "imper86/elastica-api-data-provider-bundle",
+    "description": "ApiPlatform data provider for FOSElasticaBundle",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "imper",
+            "email": "me@imper.info"
+        }
+    ],
+    "require": {
+        "php": "^7.1",
+        "symfony/config": "^3.4 || ^4.0",
+        "symfony/dependency-injection": "^3.4 || ^4.0",
+        "symfony/http-kernel": "^3.4 || ^4.0",
+        "friendsofsymfony/elastica-bundle": "^5.1",
+        "api-platform/core": "^2.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Imper86\\ElasticaApiDataProviderBundle\\": "src"
+        }
+    }
+}

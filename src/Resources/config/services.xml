@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="Imper86\ElasticaApiDataProviderBundle\DataProvider\ElasticaCollectionDataProvider" public="false" autowire="false" autoconfigure="false">
+            <argument key="$config" />
+            <argument key="$repositoryManager" type="service" id="FOS\ElasticaBundle\Manager\RepositoryManagerInterface" />
+            <argument key="$parameterBag" type="service" id="parameter_bag" />
+            <argument key="$queryFactory" type="service" id="Imper86\ElasticaApiDataProviderBundle\Factory\QueryFactoryInterface" />
+            <tag name="api_platform.collection_data_provider" priority="2" />
+        </service>
+
+        <service id="Imper86\ElasticaApiDataProviderBundle\Factory\QueryFactoryInterface" class="Imper86\ElasticaApiDataProviderBundle\Factory\QueryFactory" public="false" autowire="false" autoconfigure="false">
+            <argument key="$dispatcher" type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
+        </service>
+
+        <service id="Imper86\ElasticaApiDataProviderBundle\EventListener\QueryOrderResolveListener" public="false" autowire="false" autoconfigure="false">
+            <argument key="$parameterBag" type="service" id="parameter_bag" />
+            <tag name="kernel.event_listener" event="Imper86\ElasticaApiDataProviderBundle\Event\QueryEvent" method="onQuery" priority="1024" />
+        </service>
+
+        <service id="Imper86\ElasticaApiDataProviderBundle\EventListener\QueryExistsResolveListener" public="false" autowire="false" autoconfigure="false">
+            <argument key="$parameterBag" type="service" id="parameter_bag" />
+            <tag name="kernel.event_listener" event="Imper86\ElasticaApiDataProviderBundle\Event\QueryEvent" method="onQuery" priority="128" />
+        </service>
+    </services>
+</container>
