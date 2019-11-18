@@ -29,7 +29,6 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('query_string_filter')
                     ->addDefaultsIfNotSet()
                     ->children()
-                        ->booleanNode('enabled')->defaultFalse()->end()
                         ->scalarNode('parameter_name')->defaultValue('q')->cannotBeEmpty()->end()
                         ->enumNode('default_operator')
                             ->values(['OR', 'AND'])
@@ -38,7 +37,6 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
-                ->arrayNode('resources')->end()
             ->end();
 
         return $treeBuilder;

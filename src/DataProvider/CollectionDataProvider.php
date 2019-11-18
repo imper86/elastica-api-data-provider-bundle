@@ -10,48 +10,51 @@ namespace Imper86\ElasticaApiDataProviderBundle\DataProvider;
 
 use ApiPlatform\Core\DataProvider\ContextAwareCollectionDataProviderInterface;
 use ApiPlatform\Core\DataProvider\RestrictedDataProviderInterface;
+use Elastica\Query;
 use FOS\ElasticaBundle\Manager\RepositoryManagerInterface;
-use Imper86\ElasticaApiDataProviderBundle\Factory\QueryFactoryInterface;
-use Imper86\ElasticaApiDataProviderBundle\Model\ElasticaCollectionAwareEntityInterface;
-use Imper86\ElasticaApiDataProviderBundle\Model\Paginator;
+use Imper86\ElasticaApiDataProviderBundle\DataProvider\Extension\ExtensionInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
-class ElasticaCollectionDataProvider implements ContextAwareCollectionDataProviderInterface, RestrictedDataProviderInterface
+class CollectionDataProvider implements ContextAwareCollectionDataProviderInterface, RestrictedDataProviderInterface
 {
     /**
      * @var RepositoryManagerInterface
      */
     private $repositoryManager;
     /**
+     * @var ExtensionInterface[]|iterable
+     */
+    private $collectionExtensions;
+    /**
      * @var ParameterBagInterface
      */
     private $parameterBag;
-    /**
-     * @var QueryFactoryInterface
-     */
-    private $queryFactory;
-    /**
-     * @var array
-     */
-    private $config;
 
+    /**
+     * @param ParameterBagInterface $parameterBag
+     * @param RepositoryManagerInterface $repositoryManager
+     * @param ExtensionInterface[] $collectionExtensions
+     */
     public function __construct(
-        array $config,
-        RepositoryManagerInterface $repositoryManager,
         ParameterBagInterface $parameterBag,
-        QueryFactoryInterface $queryFactory
+        RepositoryManagerInterface $repositoryManager,
+        iterable $collectionExtensions = []
     )
     {
         $this->repositoryManager = $repositoryManager;
+        $this->collectionExtensions = $collectionExtensions;
         $this->parameterBag = $parameterBag;
-        $this->queryFactory = $queryFactory;
-        $this->config = $config;
     }
 
     public function getCollection(string $resourceClass, string $operationName = null, array $context = [])
     {
+        $query = new Query(new Query\BoolQuery());
+
+        foreach ($this->collectionExtensions as $extension) {
+            $extension->applyToCollection($query, $resourceClass, $operationName, $context);
+        }
+
         $repository = $this->repositoryManager->getRepository($resourceClass);
-        $query = $this->queryFactory->transform($context);
 
         $defaultLimit = $this->parameterBag->get('api_platform.collection.pagination.items_per_page');
         $maxLimit = $this->parameterBag->get('api_platform.collection.pagination.maximum_items_per_page');
@@ -73,7 +76,7 @@ class ElasticaCollectionDataProvider implements ContextAwareCollectionDataProvid
 
     public function supports(string $resourceClass, string $operationName = null, array $context = []): bool
     {
-        $supports = is_subclass_of($resourceClass, ElasticaCollectionAwareEntityInterface::class) ||
+        $supports = is_subclass_of($resourceClass, ElasticaCollectionAwareInterface::class) ||
             in_array($resourceClass, $this->config['resources'] ?? []);
 
         return 'get' === $operationName && $supports;

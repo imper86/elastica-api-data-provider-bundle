@@ -6,7 +6,7 @@
  * Time: 18:36
  */
 
-namespace Imper86\ElasticaApiDataProviderBundle\Model;
+namespace Imper86\ElasticaApiDataProviderBundle\DataProvider;
 
 use ApiPlatform\Core\DataProvider\PaginatorInterface;
 use FOS\ElasticaBundle\Paginator\PaginatorAdapterInterface;
@@ -14,7 +14,7 @@ use FOS\ElasticaBundle\Paginator\PartialResultsInterface;
 use FOS\ElasticaBundle\Paginator\RawPartialResults;
 use FOS\ElasticaBundle\Paginator\TransformedPartialResults;
 
-class Paginator implements \IteratorAggregate, PaginatorInterface
+final class Paginator implements \IteratorAggregate, PaginatorInterface
 {
     /**
      * @var PaginatorAdapterInterface

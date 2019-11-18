@@ -6,9 +6,9 @@
  * Time: 18:55
  */
 
-namespace Imper86\ElasticaApiDataProviderBundle\Model;
+namespace Imper86\ElasticaApiDataProviderBundle\DataProvider;
 
-interface ElasticaCollectionAwareEntityInterface
+interface ElasticaCollectionAwareInterface
 {
 
 }

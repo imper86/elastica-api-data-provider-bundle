@@ -3,26 +3,62 @@
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
     <services>
-        <service id="Imper86\ElasticaApiDataProviderBundle\DataProvider\ElasticaCollectionDataProvider" public="false" autowire="false" autoconfigure="false">
-            <argument key="$config" />
-            <argument key="$repositoryManager" type="service" id="FOS\ElasticaBundle\Manager\RepositoryManagerInterface" />
+        <service id="imper86_elastica_api.data_provider" class="Imper86\ElasticaApiDataProviderBundle\DataProvider\CollectionDataProvider" autoconfigure="false" autowire="false" public="false">
             <argument key="$parameterBag" type="service" id="parameter_bag" />
-            <argument key="$queryFactory" type="service" id="Imper86\ElasticaApiDataProviderBundle\Factory\QueryFactoryInterface" />
+            <argument key="$repositoryManager" type="service" id="FOS\ElasticaBundle\Manager\RepositoryManagerInterface" />
+            <argument key="$collectionExtensions" type="tagged" tag="imper86_elastica_api.data_provider_extension" />
             <tag name="api_platform.collection_data_provider" priority="2" />
         </service>
 
-        <service id="Imper86\ElasticaApiDataProviderBundle\Factory\QueryFactoryInterface" class="Imper86\ElasticaApiDataProviderBundle\Factory\QueryFactory" public="false" autowire="false" autoconfigure="false">
-            <argument key="$dispatcher" type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface" />
+        <!-- Extensions -->
+
+        <service id="imper86_elastica_api.query_extension" class="Imper86\ElasticaApiDataProviderBundle\DataProvider\Extension\QueryExtension" autoconfigure="false" autowire="false" public="false">
+            <argument key="$metadataFactory" type="service" id="api_platform.metadata.resource.metadata_factory" />
+            <argument key="$filterLocator" type="service" id="api_platform.filter_locator" />
+            <tag name="imper86_elastica_api.data_provider_extension" />
         </service>
 
-        <service id="Imper86\ElasticaApiDataProviderBundle\EventListener\QueryOrderResolveListener" public="false" autowire="false" autoconfigure="false">
-            <argument key="$parameterBag" type="service" id="parameter_bag" />
-            <tag name="kernel.event_listener" event="Imper86\ElasticaApiDataProviderBundle\Event\QueryEvent" method="onQuery" priority="1024" />
+        <!-- Filters -->
+
+        <service id="imper86_elastica_api.query_string_filter" class="Imper86\ElasticaApiDataProviderBundle\DataProvider\Filter\QueryStringFilter" autoconfigure="false" autowire="false" public="false">
+            <tag name="api_platform.filter" />
         </service>
 
-        <service id="Imper86\ElasticaApiDataProviderBundle\EventListener\QueryExistsResolveListener" public="false" autowire="false" autoconfigure="false">
-            <argument key="$parameterBag" type="service" id="parameter_bag" />
-            <tag name="kernel.event_listener" event="Imper86\ElasticaApiDataProviderBundle\Event\QueryEvent" method="onQuery" priority="128" />
+        <service id="imper86_elastica_api.order_filter" class="Imper86\ElasticaApiDataProviderBundle\DataProvider\Filter\OrderFilter" autowire="false" autoconfigure="false" public="false">
+            <argument key="$propertyNameCollectionFactory" type="service" id="api_platform.metadata.property.name_collection_factory" />
+            <argument key="$propertyMetadataFactory" type="service" id="api_platform.metadata.property.metadata_factory" />
+            <argument key="$resourceClassResolver" type="service" id="api_platform.resource_class_resolver" />
+            <argument key="$orderParameterName">%api_platform.collection.order_parameter_name%</argument>
+            <tag name="api_platform.filter" />
+        </service>
+
+        <service id="imper86_elastica_api.term_filter" class="Imper86\ElasticaApiDataProviderBundle\DataProvider\Filter\TermFilter" autoconfigure="false" autowire="false" public="false">
+            <argument key="$propertyNameCollectionFactory" type="service" id="api_platform.metadata.property.name_collection_factory" />
+            <argument key="$propertyMetadataFactory" type="service" id="api_platform.metadata.property.metadata_factory" />
+            <argument key="$resourceClassResolver" type="service" id="api_platform.resource_class_resolver" />
+            <tag name="api_platform.filter" />
+        </service>
+
+        <service id="imper86_elastica_api.exists_filter" class="Imper86\ElasticaApiDataProviderBundle\DataProvider\Filter\ExistsFilter" autowire="false" autoconfigure="false" public="false">
+            <argument key="$propertyNameCollectionFactory" type="service" id="api_platform.metadata.property.name_collection_factory" />
+            <argument key="$propertyMetadataFactory" type="service" id="api_platform.metadata.property.metadata_factory" />
+            <argument key="$resourceClassResolver" type="service" id="api_platform.resource_class_resolver" />
+            <argument key="$parameterName">%api_platform.collection.exists_parameter_name%</argument>
+            <tag name="api_platform.filter" />
+        </service>
+
+        <service id="imper86_elastica_api.range_filter" class="Imper86\ElasticaApiDataProviderBundle\DataProvider\Filter\RangeFilter" autoconfigure="false" autowire="false" public="false">
+            <argument key="$propertyNameCollectionFactory" type="service" id="api_platform.metadata.property.name_collection_factory" />
+            <argument key="$propertyMetadataFactory" type="service" id="api_platform.metadata.property.metadata_factory" />
+            <argument key="$resourceClassResolver" type="service" id="api_platform.resource_class_resolver" />
+            <tag name="api_platform.filter" />
+        </service>
+
+        <service id="imper86_elastica_api.boolean_filter" class="Imper86\ElasticaApiDataProviderBundle\DataProvider\Filter\BooleanFilter" autoconfigure="false" autowire="false" public="false">
+            <argument key="$propertyNameCollectionFactory" type="service" id="api_platform.metadata.property.name_collection_factory" />
+            <argument key="$propertyMetadataFactory" type="service" id="api_platform.metadata.property.metadata_factory" />
+            <argument key="$resourceClassResolver" type="service" id="api_platform.resource_class_resolver" />
+            <tag name="api_platform.filter" />
         </service>
     </services>
 </container>
