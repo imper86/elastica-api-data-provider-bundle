@@ -8,6 +8,7 @@
 
 namespace Imper86\ElasticaApiDataProviderBundle\DependencyInjection;
 
+use Imper86\ElasticaApiDataProviderBundle\DataProvider\Filter\QueryStringFilter;
 use Imper86\ElasticaApiDataProviderBundle\EventListener\QuerySearchResolveListener;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -20,5 +21,11 @@ class Imper86ElasticaApiDataProviderExtension extends Extension
     {
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.xml');
+
+        $configuration = $this->getConfiguration($configs, $container);
+        $config = $this->processConfiguration($configuration, $configs);
+
+        $container->getDefinition(QueryStringFilter::class)
+            ->setArgument(0, $config);
     }
 }
