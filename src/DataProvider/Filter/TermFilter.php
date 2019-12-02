@@ -18,7 +18,9 @@ class TermFilter extends AbstractFilter
         $boolQuery = $query->getQuery();
 
         foreach ($context['filters'] ?? [] as $property => $values) {
-            if (!$this->getMetadata($resourceClass, $property)->isSimpleType()) {
+            $metadata = $this->getMetadata($resourceClass, $property);
+
+            if (!$metadata->isSimpleType() && !$metadata->isEnum()) {
                 continue;
             }
 
@@ -33,15 +35,38 @@ class TermFilter extends AbstractFilter
         $description = [];
 
         foreach ($this->getProperties($resourceClass) as $property) {
-            if (!$this->getMetadata($resourceClass, $property)->isSimpleType()) {
+            $metadata = $this->getMetadata($resourceClass, $property);
+
+            if (!$metadata->isSimpleType() && !$metadata->isEnum()) {
                 continue;
             }
 
-            $description["{$property}[]"] = [
-                'property' => $property,
-                'type' => 'string',
-                'required' => false,
-            ];
+            if ($metadata->isEnum()) {
+                $values = array_values(call_user_func($metadata->getType()->getClassName() . '::toArray'));
+
+                $descriptionModel = [
+                    'property' => $property,
+                    'type' => 'string',
+                    'required' => false,
+                    'schema' => [
+                        'type' => 'string',
+                        'enum' => $values,
+                    ],
+                    'swagger' => [
+                        'type' => 'enum',
+                        'enum' => $values,
+                    ],
+                ];
+            } else {
+                $descriptionModel = [
+                    'property' => $property,
+                    'type' => 'string',
+                    'required' => false,
+                ];
+            }
+
+            $description[$property] = $descriptionModel;
+            $description["{$property}[]"] = $descriptionModel;
         }
 
         return $description;

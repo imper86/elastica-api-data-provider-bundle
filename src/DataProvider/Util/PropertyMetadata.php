@@ -8,6 +8,7 @@
 
 namespace Imper86\ElasticaApiDataProviderBundle\DataProvider\Util;
 
+use MyCLabs\Enum\Enum;
 use Symfony\Component\PropertyInfo\Type;
 
 class PropertyMetadata
@@ -93,5 +94,15 @@ class PropertyMetadata
                 is_a($this->getType()->getClassName(), \DateTimeInterface::class, true)
             )
         ;
+    }
+
+    public function isEnum(): ?bool
+    {
+        if (!$this->getType()) {
+            return null;
+        }
+
+        return $this->getType()->getBuiltinType() === Type::BUILTIN_TYPE_OBJECT &&
+            is_a($this->getType()->getClassName(), Enum::class, true);
     }
 }

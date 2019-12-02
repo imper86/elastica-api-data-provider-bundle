@@ -12,7 +12,6 @@ use ApiPlatform\Core\Api\ResourceClassResolverInterface;
 use ApiPlatform\Core\Metadata\Property\Factory\PropertyMetadataFactoryInterface;
 use ApiPlatform\Core\Metadata\Property\Factory\PropertyNameCollectionFactoryInterface;
 use Elastica\Query;
-use Symfony\Component\PropertyInfo\Type;
 
 class OrderFilter extends AbstractFilter
 {
@@ -40,7 +39,9 @@ class OrderFilter extends AbstractFilter
         }
 
         foreach ($properties as $property => $direction) {
-            if (!$this->getMetadata($resourceClass, $property)->isSimpleType()) {
+            $metadata = $this->getMetadata($resourceClass, $property);
+
+            if (!$metadata->isSimpleType() && !$metadata->isEnum()) {
                 continue;
             }
 
@@ -61,7 +62,9 @@ class OrderFilter extends AbstractFilter
         $description = [];
 
         foreach ($this->getProperties($resourceClass) as $property) {
-            if (!$this->getMetadata($resourceClass, $property)->isSimpleType()) {
+            $metadata = $this->getMetadata($resourceClass, $property);
+
+            if (!$metadata->isSimpleType() && !$metadata->isEnum()) {
                 continue;
             }
 
@@ -81,23 +84,5 @@ class OrderFilter extends AbstractFilter
         }
 
         return $description;
-    }
-
-    protected function isSortable(string $resourceClass, $property): bool
-    {
-        $meta = $this->getMetadata($resourceClass, $property);
-
-        if (!$meta->getType()) {
-            return false;
-        }
-
-        $sortableTypes = [
-            Type::BUILTIN_TYPE_BOOL,
-            Type::BUILTIN_TYPE_FLOAT,
-            Type::BUILTIN_TYPE_INT,
-            Type::BUILTIN_TYPE_STRING,
-        ];
-
-        return in_array($meta->getType()->getBuiltinType(), $sortableTypes);
     }
 }
