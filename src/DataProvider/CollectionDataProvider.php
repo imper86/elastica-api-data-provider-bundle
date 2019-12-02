@@ -63,7 +63,7 @@ class CollectionDataProvider implements ContextAwareCollectionDataProviderInterf
 
         $limit = $this->context['filters'][$limitParameterName] ?? $defaultLimit;
 
-        if ($limit > $maxLimit) {
+        if ($maxLimit && $limit > $maxLimit) {
             $limit = $maxLimit;
         }
 
