@@ -61,7 +61,7 @@ class CollectionDataProvider implements ContextAwareCollectionDataProviderInterf
         $pageParameterName = $this->parameterBag->get('api_platform.collection.pagination.page_parameter_name');
         $limitParameterName = $this->parameterBag->get('api_platform.collection.pagination.items_per_page_parameter_name');
 
-        $limit = $this->context['filters'][$limitParameterName] ?? $defaultLimit;
+        $limit = $context['filters'][$limitParameterName] ?? $defaultLimit;
 
         if ($maxLimit && $limit > $maxLimit) {
             $limit = $maxLimit;
@@ -69,7 +69,7 @@ class CollectionDataProvider implements ContextAwareCollectionDataProviderInterf
 
         return new Paginator(
             $repository->createPaginatorAdapter($query),
-            (int)($this->context['filters'][$pageParameterName] ?? 1),
+            (int)($context['filters'][$pageParameterName] ?? 1),
             (int)$limit
         );
     }
