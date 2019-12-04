@@ -44,29 +44,35 @@ class TermFilter extends AbstractFilter
             if ($metadata->isEnum()) {
                 $values = array_values(call_user_func($metadata->getType()->getClassName() . '::toArray'));
 
-                $descriptionModel = [
-                    'property' => $property,
-                    'type' => 'string',
-                    'required' => false,
-                    'schema' => [
+                $descriptionModel = function (bool $isCollection) use ($property, $values): array {
+                    return [
+                        'property' => $property,
                         'type' => 'string',
-                        'enum' => $values,
-                    ],
-                    'swagger' => [
-                        'type' => 'enum',
-                        'enum' => $values,
-                    ],
-                ];
+                        'required' => false,
+                        'schema' => [
+                            'type' => $isCollection ? 'array[string]' : 'string',
+                            'enum' => $values,
+                        ],
+                        'swagger' => [
+                            'type' => 'enum',
+                            'enum' => $values,
+                        ],
+                        'is_collection' => $isCollection
+                    ];
+                };
             } else {
-                $descriptionModel = [
-                    'property' => $property,
-                    'type' => 'string',
-                    'required' => false,
-                ];
+                $descriptionModel = function (bool $isCollection) use ($property): array {
+                    return [
+                        'property' => $property,
+                        'type' => 'string',
+                        'required' => false,
+                        'is_collection' => $isCollection,
+                    ];
+                };
             }
 
-            $description[$property] = $descriptionModel;
-            $description["{$property}[]"] = $descriptionModel;
+            $description[$property] = $descriptionModel(false);
+            $description["{$property}[]"] = $descriptionModel(true);
         }
 
         return $description;
