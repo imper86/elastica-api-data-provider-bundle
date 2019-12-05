@@ -60,5 +60,12 @@
             <argument key="$resourceClassResolver" type="service" id="api_platform.resource_class_resolver" />
             <tag name="api_platform.filter" />
         </service>
+
+        <service id="imper86_elastica_api.simple_query_string_filter" class="Imper86\ElasticaApiDataProviderBundle\DataProvider\Filter\SimpleQueryStringFilter" autoconfigure="false" autowire="false" public="false">
+            <argument key="$propertyNameCollectionFactory" type="service" id="api_platform.metadata.property.name_collection_factory" />
+            <argument key="$propertyMetadataFactory" type="service" id="api_platform.metadata.property.metadata_factory" />
+            <argument key="$resourceClassResolver" type="service" id="api_platform.resource_class_resolver" />
+            <tag name="api_platform.filter" />
+        </service>
     </services>
 </container>
