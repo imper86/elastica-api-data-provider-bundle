@@ -86,6 +86,7 @@ class PropertyMetadata
             Type::BUILTIN_TYPE_INT,
             Type::BUILTIN_TYPE_FLOAT,
             Type::BUILTIN_TYPE_BOOL,
+            Type::BUILTIN_TYPE_ARRAY,
         ];
 
         return in_array($this->getType()->getBuiltinType(), $simpleTypes) ||
