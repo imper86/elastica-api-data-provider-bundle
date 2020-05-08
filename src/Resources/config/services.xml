@@ -47,6 +47,13 @@
             <tag name="api_platform.filter" />
         </service>
 
+        <service id="imper86_elastica_api.must_not_term_filter" class="Imper86\ElasticaApiDataProviderBundle\DataProvider\Filter\MustNotTermFilter" autowire="false" autoconfigure="false" public="false">
+            <argument key="$propertyNameCollectionFactory" type="service" id="api_platform.metadata.property.name_collection_factory" />
+            <argument key="$propertyMetadataFactory" type="service" id="api_platform.metadata.property.metadata_factory" />
+            <argument key="$resourceClassResolver" type="service" id="api_platform.resource_class_resolver" />
+            <tag name="api_platform.filter" />
+        </service>
+
         <service id="imper86_elastica_api.range_filter" class="Imper86\ElasticaApiDataProviderBundle\DataProvider\Filter\RangeFilter" autoconfigure="false" autowire="false" public="false">
             <argument key="$propertyNameCollectionFactory" type="service" id="api_platform.metadata.property.name_collection_factory" />
             <argument key="$propertyMetadataFactory" type="service" id="api_platform.metadata.property.metadata_factory" />
