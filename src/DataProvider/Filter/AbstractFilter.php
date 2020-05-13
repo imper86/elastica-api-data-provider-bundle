@@ -117,10 +117,10 @@ abstract class AbstractFilter implements FilterInterface
                 return $noop;
             }
 
-//            if ($type->isCollection() && null === $type = $type->getCollectionValueType()) {
-//                $ref = $noop;
-//                return $noop;
-//            }
+            if ($type->isCollection() && null === $type = $type->getCollectionValueType()) {
+                $ref = $noop;
+                return $noop;
+            }
 
             if (Type::BUILTIN_TYPE_ARRAY === $builtinType && Type::BUILTIN_TYPE_OBJECT !== $type->getBuiltinType()) {
                 if ($totalProperties === $index) {
