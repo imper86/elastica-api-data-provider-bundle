@@ -13,8 +13,9 @@ use FOS\ElasticaBundle\Paginator\PaginatorAdapterInterface;
 use FOS\ElasticaBundle\Paginator\PartialResultsInterface;
 use FOS\ElasticaBundle\Paginator\RawPartialResults;
 use FOS\ElasticaBundle\Paginator\TransformedPartialResults;
+use IteratorAggregate;
 
-final class Paginator implements \IteratorAggregate, PaginatorInterface
+final class Paginator implements IteratorAggregate, PaginatorInterface
 {
     /**
      * @var PaginatorAdapterInterface
@@ -32,13 +33,18 @@ final class Paginator implements \IteratorAggregate, PaginatorInterface
      * @var PartialResultsInterface|RawPartialResults|TransformedPartialResults
      */
     private $results;
+    /**
+     * @var int
+     */
+    private $maxResults;
 
-    public function __construct(PaginatorAdapterInterface $adapter, int $page, int $limit)
+    public function __construct(PaginatorAdapterInterface $adapter, int $page, int $limit, int $maxResults)
     {
         $this->adapter = $adapter;
         $this->page = $page;
         $this->limit = $limit;
         $this->results = $this->adapter->getResults(($page - 1) * $limit, $limit);
+        $this->maxResults = $maxResults;
     }
 
     public function getIterator()
@@ -60,7 +66,7 @@ final class Paginator implements \IteratorAggregate, PaginatorInterface
 
     public function getTotalItems(): float
     {
-        return $this->results->getTotalHits();
+        return min($this->results->getTotalHits(), $this->maxResults);
     }
 
     public function getCurrentPage(): float

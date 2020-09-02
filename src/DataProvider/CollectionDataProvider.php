@@ -29,21 +29,28 @@ class CollectionDataProvider implements ContextAwareCollectionDataProviderInterf
      * @var ParameterBagInterface
      */
     private $parameterBag;
+    /**
+     * @var array
+     */
+    private $config;
 
     /**
      * @param ParameterBagInterface $parameterBag
      * @param RepositoryManagerInterface $repositoryManager
      * @param ExtensionInterface[] $collectionExtensions
+     * @param array $config
      */
     public function __construct(
         ParameterBagInterface $parameterBag,
         RepositoryManagerInterface $repositoryManager,
-        iterable $collectionExtensions = []
+        iterable $collectionExtensions = [],
+        array $config = []
     )
     {
         $this->repositoryManager = $repositoryManager;
         $this->collectionExtensions = $collectionExtensions;
         $this->parameterBag = $parameterBag;
+        $this->config = $config;
     }
 
     public function getCollection(string $resourceClass, string $operationName = null, array $context = [])
@@ -70,7 +77,8 @@ class CollectionDataProvider implements ContextAwareCollectionDataProviderInterf
         return new Paginator(
             $repository->createPaginatorAdapter($query),
             (int)($context['filters'][$pageParameterName] ?? 1),
-            (int)$limit
+            (int)$limit,
+            $this->config['max_results'] ?: 10000
         );
     }
 

@@ -8,7 +8,6 @@
 
 namespace Imper86\ElasticaApiDataProviderBundle\DependencyInjection;
 
-use Imper86\ElasticaApiDataProviderBundle\EventListener\QuerySearchResolveListener;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
@@ -26,5 +25,8 @@ class Imper86ElasticaApiDataProviderExtension extends Extension
 
         $container->getDefinition('imper86_elastica_api.query_string_filter')
             ->setArgument(0, $config);
+
+        $container->getDefinition('imper86_elastica_api.data_provider')
+            ->setArgument(3, $config);
     }
 }

@@ -37,6 +37,7 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+                ->integerNode('max_results')->defaultValue(10000)->cannotBeEmpty()->end()
             ->end();
 
         return $treeBuilder;
