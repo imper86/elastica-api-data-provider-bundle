@@ -22,5 +22,8 @@
         "psr-4": {
             "Imper86\\ElasticaApiDataProviderBundle\\": "src"
         }
+    },
+    "require-dev": {
+        "imper86/vbump": "^1.0"
     }
 }
